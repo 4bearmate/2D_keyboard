@@ -77,3 +77,106 @@ $('.keyboard-input').keyboard({
     reposition: true // 화면 크기 변경 시 자동 조정
 });
 </script>
+
+<script>
+$(document).ready(function() {
+
+    var inputFields = ["#mb_name", "#mb_birth", "#mb_company", "#mb_id"]; 
+    var hangulBuffer = {}; 
+
+    inputFields.forEach(function(selector) {
+        var $input = $(selector);
+        hangulBuffer[selector] = [];
+
+        // 특정 필드에 대해서만 숫자 키패드 레이아웃 적용
+        if (selector === "#mb_birth" || selector === "#mb_id") {
+            $input.keyboard({
+                layout: 'custom',
+                customLayout: {
+                    'default': [
+                        "1 2 3 4 5 {bksp}",
+                        "6 7 8 9 0 {accept}"
+                    ]
+                },
+                shiftActive: false, // Shift 사용 안 함
+                usePreview: false,
+                autoAccept: true,
+                openOn: "focus",
+                stayOpen: false,
+                reposition: true,
+                display: {
+                    'bksp': '←',
+                    'accept': '확인'
+                }
+            })
+            .on('keyboardChange', function(e, keyboard, el) {
+                var inputVal = keyboard.$preview.val();
+                var char = keyboard.last.key;
+                
+                if (char && char.length === 1) {
+                    hangulBuffer[selector].push(char);
+                    var composed = Hangul.assemble(hangulBuffer[selector]);
+                    keyboard.$preview.val(composed);
+                }
+            })
+            .on('keyboardHidden', function(e, keyboard, el) {
+                hangulBuffer[selector] = [];
+            });
+        } else {
+            // 다른 필드에 대한 키보드 레이아웃 (한글 키보드)
+            $input.keyboard({
+                layout: 'custom',
+                customLayout: {
+                    'default': [
+                        "1 2 3 4 5 6 7 8 9 0 - {bksp}",
+                        "ㅂ ㅈ ㄷ ㄱ ㅅ ㅛ ㅕ ㅑ ㅐ ㅔ",
+                        "ㅁ ㄴ ㅇ ㄹ ㅎ ㅗ ㅓ ㅏ ㅣ",
+                        "ㅋ ㅌ ㅊ ㅍ ㅠ ㅜ ㅡ {shift}",
+                        "{space} {alt} {accept}"
+                    ],
+                    'shift': [
+                        "1 2 3 4 5 6 7 8 9 0 {bksp}",
+                        "ㅃ ㅉ ㄸ ㄲ ㅆ ㅛ ㅕ ㅑ ㅒ ㅖ",
+                        "ㅁ ㄴ ㅇ ㄹ ㅎ ㅗ ㅓ ㅏ ㅣ",
+                        "ㅋ ㅌ ㅊ ㅍ ㅠ ㅜ ㅡ {shift}",
+                        "{space} {alt} {accept}"
+                    ],
+                    'alt': [
+                        "1 2 3 4 5 6 7 8 9 0 {bksp}",
+                        "q w e r t y u i o p",
+                        "a s d f g h j k l",
+                        "z x c v b n m",
+                        "{space} {alt} {accept}"
+                    ]
+                },
+                shiftActive: true,
+                usePreview: false,
+                autoAccept: true,
+                openOn: "focus",
+                stayOpen: false,
+                reposition: true,
+                display: {
+                    'bksp': '←',
+                    'accept': '확인',
+                    'shift': 'Shift',
+                    'alt': '한/영'
+                }
+            })
+            .on('keyboardChange', function(e, keyboard, el) {
+                var inputVal = keyboard.$preview.val();
+                var char = keyboard.last.key;
+                
+                if (char && char.length === 1) {
+                    hangulBuffer[selector].push(char);
+                    var composed = Hangul.assemble(hangulBuffer[selector]);
+                    keyboard.$preview.val(composed);
+                }
+            })
+            .on('keyboardHidden', function(e, keyboard, el) {
+                hangulBuffer[selector] = [];
+            });
+        }
+    });
+});
+
+</script>
