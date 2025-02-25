@@ -1,0 +1,14 @@
+@charset "utf-8";
+
+/* 전체 위치 */
+.ui-keyboard {
+	left : 20% !important;
+	top : 66% !important;
+}
+
+/* 버튼 크기 */
+.ui-keyboard-button {
+    height : 3em !important;
+	min-width: 3em !important;
+	line-height: 3em !important;
+}
